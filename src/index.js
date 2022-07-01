@@ -3,12 +3,16 @@ import "./styles.css";
 const onClickAdd = () => {
   const inputText = document.getElementById("add-text").value;
   document.getElementById("add-text").value = "";
+  createIncompleteList(inputText);
+};
 
+// 未完了リストに指定の要素を追加
+const createIncompleteList = (text) => {
   // DOM生成(div, li, button)
   const div = document.createElement("div");
   div.className = "list-row";
   const li = document.createElement("li");
-  li.innerText = inputText;
+  li.innerText = text;
   // button
   const completeButton = document.createElement("button");
   completeButton.innerText = "完了";
@@ -24,10 +28,14 @@ const onClickAdd = () => {
     const li = document.createElement("li");
     li.innerText = completeText;
     const returnButton = document.createElement("button");
-    returnButton.innerText = "戻る";
+    returnButton.innerText = "戻す";
     returnButton.addEventListener("click", () => {
-      deleteFromCompetelist(returnButton.parentNode);
+      const returnTarget = returnButton.parentNode;
+      const returnText = returnTarget.firstElementChild.innerText;
+      deleteFromCompetelist(returnTarget);
       // 未完了リストへ追加＊＊＊なんか面倒くさいことこの上ないんですけど！
+      // →入れ子になるので、<<関数化>>する。
+      createIncompleteList(returnText);
     });
     completeTarget.appendChild(li);
     completeTarget.appendChild(returnButton);
@@ -35,6 +43,7 @@ const onClickAdd = () => {
 
     document.getElementById("complete-list").appendChild(completeTarget);
   });
+
   const deleteButton = document.createElement("button");
   deleteButton.innerText = "削除";
   deleteButton.addEventListener("click", () => {
